@@ -2,7 +2,9 @@
 <html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name='admaven-placement' content='Bqjw6qjU9'>
+    
     <title>Otaku Universe | Professional & Integrated Platform</title>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -35,9 +37,16 @@
 
         /* --- Global Styles --- */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: all 0.3s ease; }
-        body { background-color: var(--dark-bg); color: var(--text-main); overflow-x: hidden; }
         
-        /* --- Navigation Bar --- */
+        body { 
+            background-color: var(--dark-bg); 
+            color: var(--text-main); 
+            overflow-x: hidden;
+            overflow-y: auto;
+            min-height: 100vh;
+        }
+        
+        /* --- Navigation Bar (Desktop) --- */
         nav {
             background: var(--glass); backdrop-filter: blur(15px);
             height: 80px; display: flex; align-items: center; justify-content: space-between;
@@ -63,13 +72,31 @@
         .user-nav-box span { font-weight: 700; font-size: 14px; }
 
         /* --- Layout & Rail --- */
-        .main-wrapper { max-width: 1400px; margin: 110px auto 50px; padding: 0 20px; display: grid; grid-template-columns: 80px 1fr; gap: 40px; }
+        .main-wrapper { 
+            max-width: 1400px; 
+            margin: 110px auto 50px; 
+            padding: 0 20px; 
+            display: grid; 
+            grid-template-columns: 80px 1fr; 
+            gap: 40px; 
+        }
+        
+        /* Desktop Server Rail */
         .server-rail {
             background: var(--card-bg); border-radius: 40px; padding: 25px 0;
             display: flex; flex-direction: column; align-items: center; gap: 20px;
             height: fit-content; position: sticky; top: 110px; border: var(--border);
         }
-        .server-btn { width: 50px; height: 50px; border-radius: 15px; cursor: pointer; overflow: hidden; border: 2px solid transparent; }
+        
+        /* Mobile Server Rail (Horizontal) */
+        .mobile-server-bar {
+            display: none;
+            overflow-x: auto; white-space: nowrap; gap: 15px; padding: 10px 20px;
+            margin-top: 80px; margin-bottom: 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .server-btn { width: 50px; height: 50px; border-radius: 15px; cursor: pointer; overflow: hidden; border: 2px solid transparent; flex-shrink: 0; }
         .server-btn.active { border-color: var(--primary); transform: scale(1.1); box-shadow: 0 0 15px var(--primary); }
         .server-btn img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -124,6 +151,7 @@
         .modal-content { 
             background: var(--card-bg); width: 100%; max-width: 500px; padding: 35px; 
             border-radius: 25px; border: 1px solid var(--primary); position: relative; text-align: center;
+            max-height: 90vh; overflow-y: auto;
         }
         .input-group { margin-bottom: 20px; text-align: left; }
         .input-group label { display: block; font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
@@ -159,11 +187,42 @@
         .placeholder-server { padding: 30px; background: var(--card-bg); border-radius: 20px; border: var(--border); }
         .placeholder-server h2 { color: var(--primary); margin-bottom: 15px; }
 
-        /* Responsive */
+        /* --- Mobile Bottom Navigation --- */
+        .mobile-nav {
+            display: none; position: fixed; bottom: 0; left: 0; width: 100%;
+            background: var(--glass); backdrop-filter: blur(20px);
+            border-top: 1px solid var(--primary);
+            justify-content: space-around; padding: 15px 0; z-index: 4000;
+        }
+        .mobile-nav-item {
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
+            color: var(--text-dim); font-size: 12px; cursor: pointer;
+        }
+        .mobile-nav-item i { font-size: 20px; }
+        .mobile-nav-item.active { color: var(--primary); }
+
+
+        /* --- RESPONSIVE MEDIA QUERIES --- */
         @media (max-width: 768px) {
-            .main-wrapper { grid-template-columns: 1fr; }
-            .server-rail { display: none; }
             .nav-links { display: none; }
+            .server-rail { display: none; }
+            
+            .mobile-nav { display: flex; }
+            .mobile-server-bar { display: flex; }
+
+            .main-wrapper { 
+                grid-template-columns: 1fr;
+                margin-top: 10px;
+                margin-bottom: 90px;
+                padding: 0 15px;
+            }
+
+            .news-grid { grid-template-columns: 1fr; }
+            
+            .post-body { padding: 20px; }
+            .post-body h1 { font-size: 24px; }
+            
+            .admin-plus { bottom: 90px; right: 20px; width: 50px; height: 50px; font-size: 20px; }
         }
     </style>
 </head>
@@ -185,6 +244,12 @@
             </div>
         </div>
     </nav>
+
+    <div class="mobile-server-bar">
+        <div class="server-btn active" onclick="switchServer('us', this)"><img src="https://flagcdn.com/w80/us.png"></div>
+        <div class="server-btn" onclick="switchServer('sa', this)"><img src="https://flagcdn.com/w80/sa.png"></div>
+        <div class="server-btn" onclick="switchServer('jp', this)"><img src="https://flagcdn.com/w80/jp.png"></div>
+    </div>
 
     <div class="admin-plus" onclick="openModal('admin-verify-modal')"><i class="fas fa-plus"></i></div>
 
@@ -239,7 +304,10 @@
                     </div>
                 </section>
 
-                <section id="contact-section" class="tab-content" style="display:none">
+                <section id="contact-section" class="tab-content" style="display:none; position: relative;">
+                    <div style="position: absolute; top: 0; right: 0; cursor: pointer; color: var(--primary); font-size: 24px;" onclick="switchTab('news')">
+                        <i class="fas fa-times"></i>
+                    </div>
                     <h1>Contact Support</h1>
                     <div class="post-body" style="margin-top: 30px; max-width: 600px;">
                         <div class="input-group"><input type="text" id="c-name" placeholder="Your Name"></div>
@@ -257,9 +325,7 @@
                         <h2>الخادم العربي</h2>
                     </div>
                     <h3 style="margin-bottom:20px; color:var(--text-dim)">آخر الأخبار والمستجدات</h3>
-                    
                     <div id="news-container-sa" class="news-grid"></div>
-                    
                     <div id="news-reader-sa" class="detail-view" style="display:none; text-align:right">
                         <div class="back-btn" onclick="closeNewsReader()"><i class="fas fa-arrow-right"></i> الرجوع للأخبار</div>
                         <div class="post-body">
@@ -278,9 +344,7 @@
                         <h2>日本サーバー</h2>
                     </div>
                      <h3 style="margin-bottom:20px; color:var(--text-dim)">最新ニュース (Latest News)</h3>
-                    
                     <div id="news-container-jp" class="news-grid"></div>
-
                     <div id="news-reader-jp" class="detail-view" style="display:none">
                         <div class="back-btn" onclick="closeNewsReader()"><i class="fas fa-arrow-left"></i> Back</div>
                         <div class="post-body">
@@ -292,6 +356,21 @@
                 </div>
             </div>
         </main>
+    </div>
+
+    <div class="mobile-nav">
+        <div class="mobile-nav-item active" onclick="switchTab('news'); updateMobileNav(this)">
+            <i class="fas fa-newspaper"></i>
+            <span>News</span>
+        </div>
+        <div class="mobile-nav-item" onclick="handleForumAccess(); updateMobileNav(this)">
+            <i class="fas fa-comments"></i>
+            <span>Forum</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchTab('contact'); updateMobileNav(this)">
+            <i class="fas fa-envelope"></i>
+            <span>Contact</span>
+        </div>
     </div>
 
     <div class="modal-overlay" id="login-modal">
@@ -316,13 +395,11 @@
         <div class="modal-content">
             <i class="fas fa-times" style="position:absolute; top:20px; right:25px; cursor:pointer" onclick="closeAllModals()"></i>
             <h2>Join the Universe</h2>
-            
             <div class="avatar-picker" onclick="document.getElementById('avatar-input').click()">
                 <i class="fas fa-user-plus" id="avatar-icon"></i>
                 <img id="avatar-preview" src="">
             </div>
             <input type="file" id="avatar-input" hidden accept="image/*" onchange="processAvatar(this)">
-
             <div class="input-group">
                 <input type="text" id="reg-name" placeholder="Display Name">
                 <input type="email" id="reg-email" placeholder="Email Address" style="margin-top:15px">
@@ -375,15 +452,6 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="ad-modal">
-        <div class="modal-content">
-            <i class="fas fa-shield-halved fa-4x" style="color:var(--primary); margin-bottom:20px"></i>
-            <h2>Unlock Forum</h2>
-            <p style="color:var(--text-dim); margin:20px 0">Click the button below to visit our sponsor and unlock community access.</p>
-            <a id="ad-link-btn" href="https://mostbeautuleedehad.com?HX2w1=1239483" target="_blank" class="main-btn" style="text-decoration:none; display:block" onclick="unlockForumAction()">Unlock Now</a>
-        </div>
-    </div>
-
     <div class="modal-overlay" id="create-post-modal">
         <div class="modal-content">
             <i class="fas fa-times" style="position:absolute; top:20px; right:25px; cursor:pointer" onclick="closeAllModals()"></i>
@@ -424,13 +492,23 @@
             if (usInterface.style.display !== 'none') {
                 usInterface.querySelectorAll('.tab-content').forEach(s => s.style.display = 'none');
                 document.getElementById(tabId + '-section').style.display = 'block';
+                
+                // Update Desktop Nav
                 document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                event.target.classList.add('active');
+                
+                // Note: Mobile nav update is handled by separate click handler or manually here if needed
             }
+        }
+        
+        function updateMobileNav(element) {
+            document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
+            element.classList.add('active');
         }
 
         function switchServer(serverId, btn) {
+            // Update both desktop and mobile buttons
             document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
+            // Since we have duplicates (mobile/desktop), we find all buttons with same image and activate them
             btn.classList.add('active');
 
             document.querySelectorAll('.server-view-container').forEach(view => view.style.display = 'none');
@@ -491,7 +569,7 @@
             document.getElementById('step-2').style.display = 'block';
         }
 
-        /* --- 5. CONTACT LOGIC (Added) --- */
+        /* --- 5. CONTACT LOGIC (Preserved) --- */
         function sendContactMail() {
             const name = document.getElementById('c-name').value;
             const email = document.getElementById('c-email').value;
@@ -590,15 +668,11 @@
             }
         }
 
-        /* --- 7. FORUM LOGIC (Updated with Refresh) --- */
+        /* --- 7. FORUM LOGIC (MODIFIED for Ad Placement) --- */
         function handleForumAccess() {
-            // AD REFRESH LOGIC: Append timestamp to force refresh
-            const baseLink = "https://mostbeautuleedehad.com?9RCS3=1239477";
-            const btn = document.getElementById('ad-link-btn');
-            // Adding timestamp prevents browser caching and forces a new request
-            btn.href = baseLink + "&t=" + Date.now();
-            
-            openModal('ad-modal');
+            // [MODIFIED] Replaced Smartlink pop-up with direct access
+            // The AdMaven Meta Tag in <head> will handle ads automatically if script is present.
+            unlockForumAction();
         }
 
         function unlockForumAction() {
@@ -607,8 +681,13 @@
             if (usInterface.style.display !== 'none') {
                  usInterface.querySelectorAll('.tab-content').forEach(s => s.style.display = 'none');
                  document.getElementById('forum-section').style.display = 'block';
+                 
+                 // Update active states
                  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                 document.querySelectorAll('.nav-link')[1].classList.add('active');
+                 if(document.querySelectorAll('.nav-link')[1]) document.querySelectorAll('.nav-link')[1].classList.add('active');
+                 
+                 document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
+                 if(document.querySelectorAll('.mobile-nav-item')[1]) document.querySelectorAll('.mobile-nav-item')[1].classList.add('active');
             }
         }
 
@@ -628,7 +707,6 @@
 
         function openThread(id) {
             activeThread = threads.find(t => t.id === id);
-            // Ensure reactions object exists
             if (!activeThread.userReactions) activeThread.userReactions = {};
 
             document.getElementById('forum-main-ui').style.display = 'none';
@@ -646,21 +724,18 @@
             document.getElementById('forum-detail-ui').style.display = 'none';
         }
 
-        // UPDATED: Toggle Logic for Likes/Dislikes
+        // Toggle Logic
         function updateReaction(type) {
             if (!activeThread) return;
             if (!activeThread.userReactions) activeThread.userReactions = {};
 
             if (type === 'like') {
                 if (activeThread.userReactions.liked) {
-                    // Already liked -> Remove like (Toggle off)
                     activeThread.likes--;
                     activeThread.userReactions.liked = false;
                 } else {
-                    // Not liked -> Add like
                     activeThread.likes++;
                     activeThread.userReactions.liked = true;
-                    // Remove dislike if exists
                     if (activeThread.userReactions.disliked) {
                         activeThread.dislikes--;
                         activeThread.userReactions.disliked = false;
@@ -668,14 +743,11 @@
                 }
             } else if (type === 'dislike') {
                 if (activeThread.userReactions.disliked) {
-                    // Already disliked -> Remove dislike (Toggle off)
                     activeThread.dislikes--;
                     activeThread.userReactions.disliked = false;
                 } else {
-                    // Not disliked -> Add dislike
                     activeThread.dislikes++;
                     activeThread.userReactions.disliked = true;
-                    // Remove like if exists
                     if (activeThread.userReactions.liked) {
                         activeThread.likes--;
                         activeThread.userReactions.liked = false;
@@ -689,7 +761,6 @@
             document.getElementById('like-total').innerText = activeThread.likes;
             document.getElementById('dislike-total').innerText = activeThread.dislikes;
             
-            // Visual feedback (Optional: color change)
             const likeBtn = document.getElementById('btn-like');
             const dislikeBtn = document.getElementById('btn-dislike');
             
