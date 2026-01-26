@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://otaku-universe-news.github.io/otaku-universe/sitemap.xml
