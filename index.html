@@ -60,7 +60,6 @@
         
         a { text-decoration: none; color: inherit; }
         
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--dark-bg); }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
@@ -117,7 +116,6 @@
 
         .main-wrapper.full-width { grid-template-columns: 1fr; max-width: 900px; }
         
-        /* Sidebar (Flags) */
         .server-rail {
             background: var(--glass); backdrop-filter: blur(10px);
             border-radius: 50px; padding: 25px 0;
@@ -126,7 +124,6 @@
             z-index: 900; box-shadow: var(--shadow);
         }
         
-        /* Mobile Top Bar (Flags) */
         .mobile-server-bar {
             display: none; 
             overflow-x: auto; white-space: nowrap; gap: 15px; padding: 15px 20px;
@@ -323,74 +320,33 @@
             body { padding-bottom: 130px; }
         }
 
-        /* --- MOBILE STYLES (UPDATED FOR BETTER LAYOUT) --- */
+        /* --- MOBILE STYLES --- */
         @media (max-width: 768px) {
-            /* 1. تصغير الشعار والنص */
-            .brand { 
-                font-size: 18px !important; /* تصغير الخط من 24 الى 18 */
-                gap: 5px !important; 
-            }
+            .brand { font-size: 18px !important; gap: 5px !important; }
             .brand i { font-size: 18px !important; }
 
-            /* 2. تصغير منطقة البروفايل والصورة */
-            .user-nav-box {
-                padding: 4px 8px !important; /* تقليل المساحة الداخلية */
-                gap: 6px !important;
-                height: 36px;
-                margin-right: 2px;
-            }
+            .user-nav-box { padding: 4px 8px !important; gap: 6px !important; height: 36px; margin-right: 2px; }
+            .user-nav-box img { width: 24px !important; height: 24px !important; border-width: 1px !important; }
+            .user-nav-box span { font-size: 11px !important; max-width: 60px; }
+
+            #login-trigger { padding: 6px 14px !important; font-size: 12px !important; }
+
+            nav { padding: 0 15px !important; height: 60px !important; }
+            .nav-actions { gap: 10px !important; }
+            .theme-toggle { font-size: 16px !important; padding: 5px !important; }
             
-            .user-nav-box img {
-                width: 24px !important; /* تصغير الصورة */
-                height: 24px !important;
-                border-width: 1px !important;
-            }
-
-            .user-nav-box span {
-                font-size: 11px !important; /* تصغير اسم المستخدم */
-                max-width: 60px; /* منع الاسم الطويل من تخريب الشكل */
-            }
-
-            /* تصغير زر تسجيل الدخول */
-            #login-trigger {
-                padding: 6px 14px !important;
-                font-size: 12px !important;
-            }
-
-            /* 3. ضبط المسافات العامة في الشريط */
-            nav {
-                padding: 0 15px !important; /* مسافة من اليمين واليسار */
-                height: 60px !important; /* تقليل ارتفاع الشريط قليلاً */
-            }
-
-            .nav-actions {
-                gap: 10px !important; /* تقليل الفراغ بين العناصر */
-            }
-            
-            .theme-toggle {
-                font-size: 16px !important;
-                padding: 5px !important;
-            }
-            
-            /* إخفاء القوائم وروابط السيرفرات كما كان سابقاً */
             .nav-links { display: none; }
             .server-rail { display: none !important; } 
             .mobile-nav { display: flex; }
             .mobile-server-bar { display: flex; }
             .ad-wrapper { bottom: 75px; height: 60px; padding: 5px 0; }
 
-            .main-wrapper { 
-                display: block; margin-top: 20px; margin-bottom: 20px; 
-                padding: 0 15px; width: 100%;
-            }
-            
+            .main-wrapper { display: block; margin-top: 20px; margin-bottom: 20px; padding: 0 15px; width: 100%; }
             .news-grid { grid-template-columns: 1fr; gap: 20px; }
             .post-body { padding: 25px; }
             .post-body h1 { font-size: 24px; }
-            
             .forum-header { flex-direction: column; align-items: stretch; gap: 15px; }
             .post-card { padding: 20px; }
-
             .hero-banner { min-height: 200px; padding: 25px; margin-bottom: 30px; }
             .hero-content h1 { font-size: 26px; }
 
@@ -654,6 +610,9 @@
         const TG_TOKEN = "8584369176:AAF7_akcyjXyic2MG7cd1Xx4JgB2uOpJ7ok";
         const TG_CHANNEL_ID = "-1003650299197";
 
+        // الرابط المباشر المطلوب
+        const ADS_DIRECT_LINK = "https://otieu.com/4/10553289";
+
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -662,122 +621,32 @@
         let currentUser = null;
         let currentServer = 'us'; 
 
-        // ==========================================
-        //  (1) منطقة إضافة الأخبار - NEWS AREA
-        // ==========================================
         let newsData = [
-        {
-        id: "6",
-        server: "us",
-        title: "Yumiri Hanamori Steps Down From Magilumiere Anime Role",
-        img: "https://i.postimg.cc/gJ4XsYkH/1769959276-c03694ab217f53d88c630d2e02cc0f5f-768x432.png",
-        videoUrl: "",
-        desc: "The anime Magilumiere Magical Girls Inc. announced that Yumiri Hanamori has stepped down from her role as Hitomi Koshigaya. The decision came after repeated discussions between the production team and her agency, tomorrow jam. Following the agency’s request and careful consideration, both sides reached a mutual agreement. The new voice actor for Hitomi Koshigaya has not yet been announced.",
-        date: "2026-02-01",
-        author: "Admin"
-    },
-    {
-        id: "7",
-        server: "es",
-        title: "Yumiri Hanamori abandona su papel en el anime Magilumiere",
-        img: "https://i.postimg.cc/gJ4XsYkH/1769959276-c03694ab217f53d88c630d2e02cc0f5f-768x432.png",
-        videoUrl: "",
-        desc: "El anime Magilumiere Magical Girls Inc. anunció que Yumiri Hanamori ha dejado su papel como Hitomi Koshigaya. La decisión se tomó tras varias conversaciones entre el equipo de producción y su agencia, tomorrow jam. A petición de la agencia y tras una cuidadosa evaluación, ambas partes llegaron a un acuerdo mutuo. El nuevo actor de voz para Hitomi Koshigaya aún no ha sido anunciado.",
-        date: "2026-02-01",
-        author: "Admin"
-    },
-    {
-        id: "8",
-        server: "jp",
-        title: "花守ゆみり、『マジルミエール』アニメの役を降板",
-        img: "https://i.postimg.cc/gJ4XsYkH/1769959276-c03694ab217f53d88c630d2e02cc0f5f-768x432.png",
-        videoUrl: "",
-        desc: "アニメ『マジルミエール 魔法少女株式会社』は、花守ゆみりが越谷ひとみ役を降板したことを発表した。制作側と所属事務所のtomorrow jamとの度重なる協議の結果、事務所側からの要請を受け、双方の合意のもとで決定された。なお、越谷ひとみ役の新キャストは現時点では未発表となっている。",
-        date: "2026-02-01",
-        author: "Admin"
-    },
-    {
-        id: "9",
-        server: "sa",
-        title: "يوميري هاناموري تنسحب من دورها في أنمي Magilumiere",
-        img: "https://i.postimg.cc/gJ4XsYkH/1769959276-c03694ab217f53d88c630d2e02cc0f5f-768x432.png",
-        videoUrl: "",
-        desc: "أعلن أنمي Magilumiere Magical Girls Inc. أن الممثلة الصوتية يوميري هاناموري قد انسحبت من دورها بشخصية هيتومي كوشيغايا. وجاء هذا القرار بعد عدة مناقشات بين فريق الإنتاج ووكالتها tomorrow jam، حيث طلبت الوكالة انسحابها من المشروع. وبعد دراسة متأنية، توصل الطرفان إلى اتفاق مشترك. ولم يتم بعد الإعلان عن الممثلة الصوتية الجديدة للشخصية.",
-        date: "2026-02-01",
-        author: "Admin"
-    },
-    {
-    id: "5",
-    server: "jp",
-    title: "『Wistoria: Wand and Sword』漫画、累計発行部数300万部突破で全巻重版決定",
-    img: "https://i.postimg.cc/gkJnKFh6/1769950619-f9ee68407331b3e9b3b0fb9d0796dfcc-768x432.png",
-    videoUrl: "",
-    desc: "漫画『Wistoria: Wand and Sword』は、累計発行部数が300万部を突破したことを受け、全巻重版が正式に発表された。本作の人気は着実に拡大しており、次巻は2026年4月に発売予定。また、同時期にテレビアニメ第2期の放送開始も予定されている。",
-    date: "2026-04-01",
-    author: "Admin"
-},
-        {
-    id: "4",
-    server: "sa",
-    title: "مانغا Wistoria: Wand and Sword تحصل على إعادة طباعة كاملة بعد تجاوز التوزيع 3 ملايين نسخة",
-    img: "https://i.postimg.cc/gkJnKFh6/1769950619-f9ee68407331b3e9b3b0fb9d0796dfcc-768x432.png",
-    videoUrl: "",
-    desc: "أعلنت مانغا Wistoria: Wand and Sword رسميًا عن إعادة طباعة كاملة لجميع أجزائها، بعد أن تجاوز إجمالي عدد النسخ المتداولة 3 ملايين نسخة. يعكس هذا الإنجاز الشعبية المتزايدة للسلسلة. ومن المقرر إصدار المجلد القادم في أبريل 2026، بالتزامن مع عرض الموسم الثاني من الأنمي.",
-    date: "2026-04-01",
-    author: "Admin"
-},
-        {
-    id: "3",
-    server: "es",
-    title: "El manga Wistoria: Wand and Sword recibe una reimpresión completa al superar los 3 millones de copias",
-    img: "https://i.postimg.cc/gkJnKFh6/1769950619-f9ee68407331b3e9b3b0fb9d0796dfcc-768x432.png",
-    videoUrl: "",
-    desc: "El manga Wistoria: Wand and Sword ha anunciado una reimpresión completa de la serie tras superar los 3 millones de copias en circulación. Este logro confirma la creciente popularidad de la franquicia. El próximo volumen del manga se lanzará en abril de 2026, coincidiendo con el estreno de la segunda temporada del anime.",
-    date: "2026-04-01",
-    author: "Admin"
-},
-            {
-    id: "2",
-    server: "us",
-    title: "Wistoria: Wand and Sword Manga Gets Full-Series Reprint as Circulation Surpasses 3 Million",
-    img: "https://i.postimg.cc/gkJnKFh6/1769950619-f9ee68407331b3e9b3b0fb9d0796dfcc-768x432.png",
-    videoUrl: "",
-    desc: "The manga Wistoria: Wand and Sword has announced a full-series reprint after its total circulation exceeded 3 million copies. This milestone highlights the growing popularity of the series. A new manga volume is set to release in April 2026, coinciding with the premiere of Season 2 of the TV anime.",
-    date: "2026-04-01",
-    author: "Admin"
-}
- 
-            // >>> أضف الأخبار الجديدة هنا (Add New News Here)
+            { id: "6", server: "us", title: "Yumiri Hanamori Steps Down From Magilumiere Anime Role", img: "https://i.postimg.cc/gJ4XsYkH/1769959276-c03694ab217f53d88c630d2e02cc0f5f-768x432.png", videoUrl: "", desc: "The anime Magilumiere Magical Girls Inc. announced that Yumiri Hanamori has stepped down from her role as Hitomi Koshigaya...", date: "2026-02-01", author: "Admin" },
+            { id: "7", server: "es", title: "Yumiri Hanamori abandona su papel en el anime Magilumiere", img: "https://i.postimg.cc/gJ4XsYkH/1769959276-c03694ab217f53d88c630d2e02cc0f5f-768x432.png", videoUrl: "", desc: "El anime Magilumiere Magical Girls Inc. anunció que Yumiri Hanamori ha dejado su papel como Hitomi Koshigaya...", date: "2026-02-01", author: "Admin" },
+            { id: "8", server: "jp", title: "花守ゆみり、『マジルミエール』アニメの役を降板", img: "https://i.postimg.cc/gJ4XsYkH/1769959276-c03694ab217f53d88c630d2e02cc0f5f-768x432.png", videoUrl: "", desc: "アニメ『マジルミエール 魔法少女株式会社』は、花守ゆみりが越谷ひとみ役を降板したことを発表した...", date: "2026-02-01", author: "Admin" },
+            { id: "9", server: "sa", title: "يوميري هاناموري تنسحب من دورها في أنمي Magilumiere", img: "https://i.postimg.cc/gJ4XsYkH/1769959276-c03694ab217f53d88c630d2e02cc0f5f-768x432.png", videoUrl: "", desc: "أعلن أنمي Magilumiere Magical Girls Inc. أن الممثلة الصوتية يوميري هاناموري قد انسحبت من دورها بشخصية هيتومي كوشيغايا...", date: "2026-02-01", author: "Admin" },
+            { id: "5", server: "jp", title: "『Wistoria: Wand and Sword』漫画、累計発行部数300万部突破で全巻重版決定", img: "https://i.postimg.cc/gkJnKFh6/1769950619-f9ee68407331b3e9b3b0fb9d0796dfcc-768x432.png", videoUrl: "", desc: "漫画『Wistoria: Wand and Sword』は、累計発行部数が300万部を突破したことを受け...", date: "2026-04-01", author: "Admin" },
+            { id: "4", server: "sa", title: "مانغا Wistoria: Wand and Sword تحصل على إعادة طباعة كاملة", img: "https://i.postimg.cc/gkJnKFh6/1769950619-f9ee68407331b3e9b3b0fb9d0796dfcc-768x432.png", videoUrl: "", desc: "أعلنت مانغا Wistoria: Wand and Sword رسميًا عن إعادة طباعة كاملة لجميع أجزائها...", date: "2026-04-01", author: "Admin" },
+            { id: "3", server: "es", title: "El manga Wistoria: Wand and Sword recibe una reimpresión completa", img: "https://i.postimg.cc/gkJnKFh6/1769950619-f9ee68407331b3e9b3b0fb9d0796dfcc-768x432.png", videoUrl: "", desc: "El manga Wistoria: Wand and Sword ha anunciado una reimpresión completa de la serie...", date: "2026-04-01", author: "Admin" },
+            { id: "2", server: "us", title: "Wistoria: Wand and Sword Manga Gets Full-Series Reprint", img: "https://i.postimg.cc/gkJnKFh6/1769950619-f9ee68407331b3e9b3b0fb9d0796dfcc-768x432.png", videoUrl: "", desc: "The manga Wistoria: Wand and Sword has announced a full-series reprint...", date: "2026-04-01", author: "Admin" }
         ];
 
-        // ==========================================
-        //  (2) منطقة إضافة المراجعات - REVIEWS AREA
-        // ==========================================
         let reviewsData = [
-            {
-                id: "101",
-                server: "us", 
-                title: "Attack on Titan Final Season Review",
-                img: "https://images7.alphacoders.com/133/1330715.jpeg",
-                desc: "An absolute masterpiece regarding storytelling and animation. The conclusion is...",
-                score: "10" 
-            },
-            {
-                id: "102",
-                server: "sa", 
-                title: "مراجعة انمي جوجوتسو كايسن",
-                img: "https://images.alphacoders.com/114/1146237.jpg",
-                desc: "الأنمي يقدم مستوى تحريك خرافي وقصة مشوقة جداً، الشخصيات مكتوبة بعناية...",
-                score: "9.5" 
-            }
-            // >>> أضف المراجعات الجديدة هنا (Add New Reviews Here)
+            { id: "101", server: "us", title: "Attack on Titan Final Season Review", img: "https://images7.alphacoders.com/133/1330715.jpeg", desc: "An absolute masterpiece regarding storytelling and animation. The conclusion is...", score: "10" },
+            { id: "102", server: "sa", title: "مراجعة انمي جوجوتسو كايسن", img: "https://images.alphacoders.com/114/1146237.jpg", desc: "الأنمي يقدم مستوى تحريك خرافي وقصة مشوقة جداً، الشخصيات مكتوبة بعناية...", score: "9.5" }
         ];
         
         let threads = [];
         let activeThread = null;
         let activeThreadDocId = null;
 
-        /* --- LOGIC --- */
+        /* --- Ad Logic (Modified for Direct Link) --- */
+        function triggerAd() {
+            window.open(ADS_DIRECT_LINK, '_blank');
+        }
+
+        /* --- UI Functions --- */
         function initRealtimeListeners() {
             renderNews();
             renderReviews();
@@ -793,10 +662,7 @@
 
         auth.onAuthStateChanged((user) => {
             if (user) {
-                currentUser = { 
-                    name: user.displayName || "User", email: user.email,
-                    avatar: user.photoURL || "https://via.placeholder.com/100" 
-                };
+                currentUser = { name: user.displayName || "User", email: user.email, avatar: user.photoURL || "https://via.placeholder.com/100" };
                 updateUserUI();
             } else {
                 currentUser = null;
@@ -805,11 +671,9 @@
             }
         });
 
-        /* --- Routing (SEO Friendly ?type=news&id=1) --- */
         function createSlug(title) { return title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''); }
 
         function handleRouting() {
-            // قراءة البارامترات من الرابط
             const urlParams = new URLSearchParams(window.location.search);
             const type = urlParams.get('type');
             const id = urlParams.get('id');
@@ -817,7 +681,6 @@
             if (type === 'news' && id) {
                 const item = newsData.find(n => n.id === id);
                 if (item) {
-                    // Update Title for Browser
                     document.title = `${item.title} | Otaku Universe`;
                     switchTab('news');
                     if(item.server !== currentServer) {
@@ -836,26 +699,22 @@
                     renderReviewDetail(item);
                 }
             } else {
-                // Default Title
                 document.title = "Otaku Universe | Anime & Manga Hub";
                 closeNewsReader(); 
                 closeReviewReader();
             }
         }
         
-        // Listen to Back/Forward buttons
         window.addEventListener('popstate', handleRouting);
         window.addEventListener('load', () => { initRealtimeListeners(); handleRouting(); });
 
         function goBackToGrid() {
-            // مسح البارامترات من الرابط والعودة للصفحة الرئيسية
             window.history.pushState({}, "Otaku Universe", window.location.pathname);
             document.title = "Otaku Universe | Anime & Manga Hub";
             closeNewsReader(); 
             closeReviewReader();
         }
 
-        /* --- UI Functions --- */
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(s => s.style.display = 'none');
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -871,7 +730,6 @@
                 if(mobileRail) mobileRail.style.display = (window.innerWidth <= 768) ? 'flex' : 'none';
                 wrapper.classList.remove('full-width');
                 document.getElementById('hero-banner').style.display = 'flex';
-
             } else if (tabId === 'review') {
                 document.getElementById('review-section').style.display = 'block';
                 document.querySelectorAll('.nav-link')[1].classList.add('active');
@@ -880,7 +738,6 @@
                 wrapper.classList.remove('full-width');
                 document.getElementById('hero-banner').style.display = 'none';
                 renderReviews();
-
             } else if (tabId === 'forum') {
                 document.getElementById('forum-section').style.display = 'block';
                 document.querySelectorAll('.nav-link')[2].classList.add('active');
@@ -889,7 +746,6 @@
                 wrapper.classList.remove('full-width');
                 document.getElementById('hero-banner').style.display = 'none';
                 renderForum();
-
             } else if (tabId === 'contact') {
                 document.getElementById('contact-section').style.display = 'block';
                 document.querySelectorAll('.nav-link')[3].classList.add('active');
@@ -909,9 +765,7 @@
             document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
             if(btn) btn.classList.add('active');
             else document.querySelectorAll(`.server-btn[onclick*="${serverId}"]`).forEach(b => b.classList.add('active'));
-            
             currentServer = serverId;
-            
             if(document.getElementById('forum-section').style.display !== 'none') renderForum();
             else if (document.getElementById('review-section').style.display !== 'none') renderReviews();
             else { switchTab('news'); renderNews(); }
@@ -941,29 +795,20 @@
             const email = document.getElementById('reg-email').value;
             const pass = document.getElementById('reg-pass').value;
             const pfp = document.getElementById('avatar-preview').src;
-            
             if(!name || !email || !pass) return alert("Please fill all fields!");
-            if(pfp.includes("window.location") || pfp === "") return alert("Please select an avatar!");
-
-            auth.createUserWithEmailAndPassword(email, pass)
-                .then((userCredential) => {
-                    userCredential.user.updateProfile({ displayName: name, photoURL: pfp }).then(() => {
-                        currentUser = { name: name, email: email, avatar: pfp };
-                        sendTextToTelegram(`🆕 New User:\n👤 Name: ${name}\n📧 Email: ${email}`);
-                        updateUserUI(); closeAllModals();
-                    });
-                })
-                .catch((error) => { alert("Error: " + error.message); });
+            auth.createUserWithEmailAndPassword(email, pass).then((userCredential) => {
+                userCredential.user.updateProfile({ displayName: name, photoURL: pfp }).then(() => {
+                    currentUser = { name: name, email: email, avatar: pfp };
+                    updateUserUI(); closeAllModals();
+                });
+            }).catch((error) => { alert("Error: " + error.message); });
         }
 
         function executeLogin() {
             const email = document.getElementById('log-email').value;
             const pass = document.getElementById('log-pass').value;
             if(!email || !pass) return alert("Please enter email and password");
-
-            auth.signInWithEmailAndPassword(email, pass)
-                .then(() => { closeAllModals(); })
-                .catch((error) => { alert("Login Failed: " + error.message); });
+            auth.signInWithEmailAndPassword(email, pass).then(() => { closeAllModals(); }).catch((error) => { alert("Login Failed: " + error.message); });
         }
 
         function executeLogout() { auth.signOut().then(() => { window.location.reload(); }); }
@@ -982,24 +827,21 @@
             const email = document.getElementById('c-email').value;
             const msg = document.getElementById('c-msg').value;
             if(!name || !email || !msg) { alert("Please fill in all fields"); return; }
-            sendTextToTelegram(`📩 Contact Msg:\n\n👤 From: ${name}\n📧 Email: ${email}\n📝: ${msg}`);
             alert("Message Sent!");
         }
 
-        /* --- News Logic --- */
+        /* --- News Logic (Triggering Ad) --- */
         function renderNews() {
             const container = document.getElementById(`news-container-${currentServer}`);
             if(container) {
                 const filteredNews = newsData.filter(n => n.server === currentServer);
-                if(filteredNews.length === 0) container.innerHTML = `<p style="color:var(--text-dim); text-align:center; width:100%; grid-column: 1/-1;">No news available for this region yet.</p>`;
+                if(filteredNews.length === 0) container.innerHTML = `<p style="color:var(--text-dim); text-align:center; width:100%;">No news available for this region.</p>`;
                 else {
                     container.innerHTML = filteredNews.map(n => `
                         <div class="news-card" onclick="openNewsDetail('${n.id}')">
                             <img src="${n.img}" class="news-img">
                             <div class="news-info">
-                                <div class="news-meta">
-                                    <span><i class="far fa-calendar-alt"></i> ${n.date}</span>
-                                </div>
+                                <div class="news-meta"><span><i class="far fa-calendar-alt"></i> ${n.date}</span></div>
                                 <h3>${n.title}</h3>
                                 <p>${n.desc}</p>
                             </div>
@@ -1009,21 +851,12 @@
             }
         }
 
-        function getYoutubeEmbed(url) {
-            if(!url) return null;
-            let videoId = "";
-            if(url.includes("v=")) videoId = url.split("v=")[1].split("&")[0];
-            else if(url.includes("youtu.be/")) videoId = url.split("youtu.be/")[1];
-            return videoId ? "https://www.youtube.com/embed/" + videoId : url;
-        }
-
         function openNewsDetail(id) {
+            triggerAd(); // فتح الإعلان
             const newsItem = newsData.find(n => n.id === id);
             if(newsItem) {
-                // Change URL to ?type=news&id=...
                 const newUrl = `?type=news&id=${id}&title=${createSlug(newsItem.title)}`;
                 window.history.pushState({path: newUrl}, '', newUrl);
-                document.title = `${newsItem.title} | Otaku Universe`;
                 renderNewsDetail(newsItem);
             }
         }
@@ -1031,12 +864,7 @@
         function renderNewsDetail(newsItem) {
             document.getElementById(`news-container-${currentServer}`).style.display = 'none';
             const readerBody = document.getElementById(`reader-body-${currentServer}`);
-            
-            let contentHtml = `<h1>${newsItem.title}</h1>`;
-            if(newsItem.videoUrl) contentHtml += `<div class="video-container"><iframe src="${getYoutubeEmbed(newsItem.videoUrl)}" allowfullscreen></iframe></div>`;
-            else contentHtml += `<img src="${newsItem.img}" class="post-image">`;
-            
-            contentHtml += `<p style="white-space: pre-wrap; line-height: 1.8; color: var(--text-dim); font-size:16px">${newsItem.desc}</p>`;
+            let contentHtml = `<h1>${newsItem.title}</h1><img src="${newsItem.img}" class="post-image"><p style="white-space: pre-wrap; line-height: 1.8; color: var(--text-dim); font-size:16px">${newsItem.desc}</p>`;
             readerBody.innerHTML = contentHtml;
             document.getElementById(`news-reader-${currentServer}`).style.display = 'block';
             window.scrollTo(0,0);
@@ -1048,11 +876,10 @@
             if(reader && grid) { reader.style.display = 'none'; grid.style.display = 'grid'; }
         }
 
-        /* --- Reviews Logic --- */
+        /* --- Reviews Logic (Triggering Ad) --- */
         function renderReviews() {
             const container = document.getElementById('review-grid');
             document.getElementById('review-server-label').innerText = currentServer.toUpperCase();
-            
             if(container) {
                 const filteredReviews = reviewsData.filter(r => r.server === currentServer);
                 if(filteredReviews.length === 0) container.innerHTML = `<p style="color:var(--text-dim); text-align:center; grid-column: 1/-1;">No reviews yet.</p>`;
@@ -1061,10 +888,7 @@
                         <div class="news-card" onclick="openReviewDetail('${r.id}')">
                              <div class="review-score-badge"><i class="fas fa-star"></i> ${r.score}</div>
                             <img src="${r.img}" class="news-img">
-                            <div class="news-info">
-                                <h3>${r.title}</h3>
-                                <p>${r.desc}</p>
-                            </div>
+                            <div class="news-info"><h3>${r.title}</h3><p>${r.desc}</p></div>
                         </div>
                     `).join('');
                 }
@@ -1072,11 +896,11 @@
         }
 
         function openReviewDetail(id) {
+            triggerAd(); // فتح الإعلان
             const item = reviewsData.find(r => r.id === id);
             if(item) {
                 const newUrl = `?type=review&id=${id}&title=${createSlug(item.title)}`;
                 window.history.pushState({path: newUrl}, '', newUrl);
-                document.title = `${item.title} | Review`;
                 renderReviewDetail(item);
             }
         }
@@ -1087,7 +911,7 @@
             body.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                     <h1>${item.title}</h1>
-                    <div style="background:var(--review-color); color:black; font-weight:bold; padding:8px 20px; border-radius:12px; font-size:20px; box-shadow:0 4px 15px rgba(241, 196, 15, 0.4)"><i class="fas fa-star"></i> ${item.score}</div>
+                    <div style="background:var(--review-color); color:black; font-weight:bold; padding:8px 20px; border-radius:12px; font-size:20px;"><i class="fas fa-star"></i> ${item.score}</div>
                 </div>
                 <img src="${item.img}" class="post-image">
                 <p style="white-space: pre-wrap; line-height: 1.8; color: var(--text-dim); font-size:16px">${item.desc}</p>
@@ -1106,20 +930,14 @@
             const feed = document.getElementById('forum-feed');
             document.getElementById('community-server-label').innerText = currentServer.toUpperCase();
             let filtered = threads.filter(t => t.server === currentServer);
-
             if (filtered.length === 0) {
-                feed.innerHTML = `<p style="text-align:center; padding:40px; color:var(--text-dim); background:var(--card-bg); border-radius:20px; border:var(--border)">Be the first to start a discussion in ${currentServer.toUpperCase()}!</p>`;
+                feed.innerHTML = `<p style="text-align:center; padding:40px; color:var(--text-dim);">No discussions yet.</p>`;
                 return;
             }
-
             feed.innerHTML = filtered.map(t => `
                 <div class="post-card" onclick="openThread('${t.id}')">
                     <h3>${t.title}</h3>
-                    <div class="post-meta">
-                        <span><i class="fas fa-user-circle"></i> ${t.user}</span>
-                        <span><i class="far fa-comments"></i> ${t.comments ? t.comments.length : 0}</span>
-                        <span><i class="far fa-heart"></i> ${t.likes || 0}</span>
-                    </div>
+                    <div class="post-meta"><span><i class="fas fa-user-circle"></i> ${t.user}</span></div>
                 </div>
             `).join('');
         }
@@ -1127,40 +945,20 @@
         function openThread(id) {
             activeThread = threads.find(t => t.id === id);
             activeThreadDocId = id;
-            if (!activeThread) return; 
-
             document.getElementById('forum-main-ui').style.display = 'none';
             document.getElementById('forum-detail-ui').style.display = 'block';
-            
-            let imgPart = activeThread.img ? `<img src="${activeThread.img}" class="post-image">` : '';
-            document.getElementById('thread-content').innerHTML = `<h1>${activeThread.title}</h1>${imgPart}<p style="font-size:16px; color:var(--text-dim); line-height:1.6">${activeThread.desc}</p>`;
-            updateReactionUI(); renderComments();
+            document.getElementById('thread-content').innerHTML = `<h1>${activeThread.title}</h1><p>${activeThread.desc}</p>`;
+            renderComments();
         }
 
         function closeThread() {
             document.getElementById('forum-main-ui').style.display = 'block';
             document.getElementById('forum-detail-ui').style.display = 'none';
-            activeThread = null; activeThreadDocId = null;
-        }
-
-        function updateReaction(type) {
-            if (!activeThreadDocId) return;
-            let updateData = type === 'like' ? { likes: firebase.firestore.FieldValue.increment(1) } : {};
-            db.collection('threads').doc(activeThreadDocId).update(updateData);
-        }
-
-        function updateReactionUI() {
-            if(!activeThread) return;
-            document.getElementById('like-total').innerText = activeThread.likes || 0;
         }
 
         function postComment() {
             if(!currentUser) return openModal('login-modal');
             const text = document.getElementById('comment-text').value;
-            if(!text) return;
-            
-            sendTextToTelegram(`💬 Forum Comment:\n📌 Topic: ${activeThread.title}\n👤 User: ${currentUser.name}\n📝: ${text}`);
-
             db.collection('threads').doc(activeThreadDocId).update({
                 comments: firebase.firestore.FieldValue.arrayUnion({ id: Date.now(), user: currentUser.name, avatar: currentUser.avatar, text: text })
             }).then(() => { document.getElementById('comment-text').value = ''; });
@@ -1169,53 +967,14 @@
         function renderComments() {
             const box = document.getElementById('comments-render');
             const comments = activeThread.comments || [];
-            if(comments.length === 0) box.innerHTML = '<p style="color:var(--text-dim)">No comments yet. Be the first!</p>';
-            else {
-                box.innerHTML = comments.map(c => `
-                    <div class="comment-item">
-                        <img src="${c.avatar}">
-                        <div class="comment-data">
-                            <h4>${c.user}</h4>
-                            <p>${c.text}</p>
-                        </div>
-                    </div>
-                `).join('');
-            }
+            box.innerHTML = comments.map(c => `<div class="comment-item"><img src="${c.avatar}"><div class="comment-data"><h4>${c.user}</h4><p>${c.text}</p></div></div>`).join('');
         }
 
-        function reportCurrentThread() { if(activeThread) openReportModal(activeThread.user, activeThread.title); }
-
-        function openReportModal(user, text) {
-            document.getElementById('report-target-user').value = user;
-            document.getElementById('report-target-text').value = text;
-            openModal('report-modal');
-        }
-
-        function submitReport() {
-            const reason = document.getElementById('report-reason').value;
-            const rUser = document.getElementById('report-target-user').value;
-            const rText = document.getElementById('report-target-text').value;
-            sendTextToTelegram(`🚨 REPORT [${currentServer}]:\nReason: ${reason}\nUser: ${rUser}\nContent: "${rText}"`);
-            alert("Report submitted! We will review it shortly."); closeAllModals();
-        }
-
-        async function saveThread() {
+        function saveThread() {
             if(!currentUser) return openModal('login-modal');
             const title = document.getElementById('p-title').value;
             const desc = document.getElementById('p-desc').value;
-            const imgUrl = document.getElementById('p-img-url').value; 
-            
-            if(!title || !desc) return;
-            sendTextToTelegram(`📢 New Thread (${currentServer}):\n👤: ${currentUser.name}\n📌: ${title}`);
-            db.collection('threads').add({ 
-                user: currentUser.name, title, desc, img: imgUrl || "", likes: 0, 
-                comments: [], server: currentServer, createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => { closeAllModals(); });
-        }
-
-        function sendTextToTelegram(message) {
-            const url = `https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_CHANNEL_ID}&text=${encodeURIComponent(message)}`;
-            fetch(url).catch(err => console.error("Err:", err));
+            db.collection('threads').add({ user: currentUser.name, title, desc, likes: 0, comments: [], server: currentServer, createdAt: firebase.firestore.FieldValue.serverTimestamp() }).then(() => { closeAllModals(); });
         }
 
         function openModal(id) { closeAllModals(); document.getElementById(id).style.display = 'flex'; }
