@@ -16,7 +16,10 @@
     
     
     <script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
-
+    
+    <script async src="https://js.onclckmn.com/static/onclicka.js" data-admpid="421551"></script>
+<script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
+<script async src="https://js.onclckmn.com/static/onclicka.js" data-admpid="421551"></script>
     <style>
         /* --- Theme Variables --- */
         :root {
@@ -309,12 +312,19 @@
 
         /* --- ADVERTISING STYLES --- */
         .ad-wrapper {
-            position: fixed; bottom: 70px; left: 0; width: 100%;
-            display: flex; justify-content: center; align-items: center;
-            background: var(--dark-bg); z-index: 3900;
-            padding: 8px 0; border-top: 1px solid var(--border);
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
-        }
+    position: fixed;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* رفع القيمة ليكون فوق أزرار الهاتف */
+    z-index: 9000;
+    padding: 5px 0;
+    /* إزالة الخلفية البيضاء لمنع الحجب */
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
 
         @media (min-width: 769px) {
             .ad-wrapper { bottom: 0; padding: 15px 0; height: 110px; }
@@ -340,7 +350,7 @@
             .server-rail { display: none !important; } 
             .mobile-nav { display: flex; }
             .mobile-server-bar { display: flex; }
-            .ad-wrapper { bottom: 75px; height: 60px; padding: 5px 0; }
+            .ad-wrapper { bottom: 85px; height: 60px; padding: 5px 0; }
 
             .main-wrapper { display: block; margin-top: 20px; margin-bottom: 20px; padding: 0 15px; width: 100%; }
             .news-grid { grid-template-columns: 1fr; gap: 20px; }
@@ -503,15 +513,17 @@
         </main>
     </div>
 
-    <div class="ad-wrapper">
-        <div style="background: white; padding: 2px; border-radius: 4px;">
-            <script type="text/javascript">
+ <div class="ad-wrapper">
+    <div style="background: transparent !important; padding: 0;">
+        <script type="text/javascript">
+            if (typeof aclib !== 'undefined') {
                 aclib.runBanner({
                     zoneId: '10864598',
                 });
-            </script>
-        </div>
+            }
+        </script>
     </div>
+</div>
 
     <div class="mobile-nav">
         <div class="mobile-nav-item active" onclick="switchTab('news'); updateMobileNav(this)">
@@ -608,19 +620,16 @@
             measurementId: "G-TWV84KPXDL"
         };
         
-        // --- FIXED: Initialize Firebase ---
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const auth = firebase.auth();
         
         const TG_TOKEN = "8584369176:AAF7_akcyjXyic2MG7cd1Xx4JgB2uOpJ7ok";
         
-        // --- FIXED: Added currentServer variable ---
         let currentServer = 'us';
         let currentUser = null;
-        const ADS_DIRECT_LINK = "https://otieu.com/4/10553289"; // Replace this with your actual ad link
+        const ADS_DIRECT_LINK = "https://otieu.com/4/10553289"; 
 
-        // --- FIXED: Added variable declaration 'const newsData =' ---
         const newsData = [
             {
         id: "6",
@@ -686,10 +695,10 @@
     {
         id:   "5",
         server: "jp",
-        title: "『Wistoria: Wand and Sword』漫画、累計発行部数300万部突破で全巻重版決定",
+        title: "『Wistoria: Wand and Sword』漫画، 累計発行部数300万部突破で全巻重版決定",
         img: "https://i.postimg.cc/gkJnKFh6/1769950619-f9ee68407331b3e9b3b0fb9d0796dfcc-768x432.png",
         videoUrl: "",
-        desc: "漫画『Wistoria: Wand and Sword』は、累計発行部数が300万部を突破したことを受け、全巻重版が正式に発表された。本作の人気は着実に拡大しており、次巻は2026年4月に発売予定。また、同時期にテレビアニメ第2期の放送開始も予定されている。",
+        desc: "漫画『Wistoria: Wand and Sword』は، 累計発行部数が300万部を突破したことを受け، 全巻重版が正式に発表された. 本作の人気は着実に拡大しており، 次巻は2026年4月に発売予定. また، 同時期にテレビアニメ第2期の放送開始も予定されている.",
         date: "2026-04-01",
         author: "Admin"
     }
@@ -704,12 +713,10 @@
         let activeThread = null;
         let activeThreadDocId = null;
 
-        /* --- Ad Logic (Modified for Direct Link) --- */
         function triggerAd() {
             window.open(ADS_DIRECT_LINK, '_blank');
         }
 
-        /* --- UI Functions --- */
         function initRealtimeListeners() {
             renderNews();
             renderReviews();
@@ -840,7 +847,6 @@
             icon.className = document.body.classList.contains('light-mode') ? 'fas fa-sun' : 'fas fa-moon';
         }
 
-        /* --- Auth Functions --- */
         function processAvatar(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -893,7 +899,6 @@
             alert("Message Sent!");
         }
 
-        /* --- News Logic (Triggering Ad) --- */
         function renderNews() {
             const container = document.getElementById(`news-container-${currentServer}`);
             if(container) {
@@ -915,7 +920,7 @@
         }
 
         function openNewsDetail(id) {
-            triggerAd(); // فتح الإعلان
+            triggerAd(); 
             const newsItem = newsData.find(n => n.id === id);
             if(newsItem) {
                 const newUrl = `?type=news&id=${id}&title=${createSlug(newsItem.title)}`;
@@ -939,7 +944,6 @@
             if(reader && grid) { reader.style.display = 'none'; grid.style.display = 'grid'; }
         }
 
-        /* --- Reviews Logic (Triggering Ad) --- */
         function renderReviews() {
             const container = document.getElementById('review-grid');
             document.getElementById('review-server-label').innerText = currentServer.toUpperCase();
@@ -959,7 +963,7 @@
         }
 
         function openReviewDetail(id) {
-            triggerAd(); // فتح الإعلان
+            triggerAd(); 
             const item = reviewsData.find(r => r.id === id);
             if(item) {
                 const newUrl = `?type=review&id=${id}&title=${createSlug(item.title)}`;
@@ -988,7 +992,6 @@
             document.getElementById('review-grid').style.display = 'grid';
         }
 
-        /* --- Forum Logic --- */
         function renderForum() {
             const feed = document.getElementById('forum-feed');
             document.getElementById('community-server-label').innerText = currentServer.toUpperCase();
