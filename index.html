@@ -1,8 +1,8 @@
+
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-
-<meta name="monetag" content="4707a917cc2cf5473b7f25accc01c081">
     <meta charset="UTF-8">
     <title>Otaku Universe | Anime & Manga Hub</title>
     
@@ -12,16 +12,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
-<script defer src="https://cloud.umami.is/script.js" data-website-id="d2e3dc1c-6492-463d-8451-61befd05ec73"></script>
-
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
     
-    <script async src="https://pufted.com/p/waWQiOjEyMTg3MjYsInNpZCI6MTYzNjg1Mywid2lkIjo3MzI3NjIsInNyYyI6Mn0=eyJ.js"></script>
+   <script src="https://processesshaken.com/0d/6e/b3/0d6eb395651b54afd65a95961cf8acc4.js"></script>
    
     
-    <script async src="https://udzpel.com/pw/waWQiOjEyMTg3MjYsInNpZCI6MTYzNjg1Mywid2lkIjo3MzI3OTgsInNyYyI6Mn0=eyJ.js"></script>
+   
 
     <style>
         /* --- Theme Variables --- */
@@ -300,20 +298,135 @@
             margin: 30px 0;
             background: var(--card-bg);
             border-radius: 16px;
-            padding: 10px;
+            padding: 0;
             border: var(--border);
             box-shadow: var(--shadow);
-            overflow: visible;
-            min-height: 100px;
-            display: block;
+            overflow: hidden;
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* إخفاء كل النصوص داخل ad-container */
+        .ad-container {
+            font-size: 0 !important;
+            line-height: 0 !important;
+            color: transparent !important;
+        }
+        
+        .ad-container * {
+            font-size: 0 !important;
+            color: transparent !important;
         }
 
         .ad-container script,
-        .ad-container ins {
-            width: 100% !important;
-            display: block !important;
-            margin: 0 auto !important;
+        .ad-container ins,
+        .ad-container iframe {
+    max-width: 100% !important;
+    height: 100% !important;
+}
+
+
+        /* السماح للـ iframe بالظهور فقط */
+        .ad-container iframe {
+            font-size: initial !important;
+            color: initial !important;
+        }
+
+        /* إخفاء div#ad-slot إذا كان يحتوي على نص فقط */
+        .ad-container > div[id^="ad-slot"] {
+            font-size: 0 !important;
+            line-height: 0 !important;
+        }
+
+        /* --- INTERSTITIAL AD STYLES --- */
+        .interstitial-ad-page {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 70px);
+            background: var(--dark-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .interstitial-content {
             text-align: center;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .interstitial-title {
+            color: var(--text-main);
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .interstitial-ad-frame-wrapper {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .interstitial-ad-frame {
+            width: 100%;
+            height: 500px;
+            border: none;
+            border-radius: 12px;
+        }
+
+        .interstitial-countdown {
+            color: var(--text-dim);
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .interstitial-countdown span {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .skip-ad-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(142, 68, 173, 0.3);
+        }
+
+        .skip-ad-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(142, 68, 173, 0.4);
+        }
+
+        .skip-ad-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
         }
 
         /* --- ABOUT SECTION --- */
@@ -835,8 +948,12 @@
                 grid-template-columns: 1fr;
             }
             .ad-container {
-                margin: 20px 0;
-                border-radius: 12px;
+                margin: 20px -15px; /* سحب الإعلان للحواف */
+                border-radius: 0; /* إزالة الحواف المدورة للموبايل */
+                width: calc(100% + 30px); /* ملء العرض الكامل */
+                padding: 0;
+                border-left: none;
+                border-right: none;
             }
         }
 
@@ -845,6 +962,13 @@
             .hero-content h1 { font-size: 26px; }
             .section-header h2 { font-size: 22px; }
             .modal { padding: 30px 20px; }
+            
+            /* جعل الإعلان ملء الشاشة بالكامل على الشاشات الصغيرة */
+            .ad-container {
+                margin: 15px -15px;
+                border-radius: 0;
+                width: calc(100% + 30px);
+            }
         }
 
         /* --- Welcome Tutorial Popup --- */
@@ -996,16 +1120,19 @@
                 margin-bottom: 25px;
             }
         }
-        @media (min-width: 600px) {
-              .tutorial-overlay {
+
+        /* إخفاء نافذة التعليمات على شاشات PC */
+        @media (min-width: 769px) {
+            .tutorial-overlay {
                 display: none !important;
-              }
-        }      
+            }
+        }
+        
     </style>
 </head>
 <body>
     <!-- Welcome Tutorial Popup -->
-   <div class="tutorial-overlay" id="tutorial-overlay">
+    <div class="tutorial-overlay" id="tutorial-overlay">
         <div class="tutorial-popup">
             <div class="tutorial-close" onclick="closeTutorial()">
                 <i class="fas fa-times"></i>
@@ -1082,8 +1209,18 @@
             </div>
 
             <!-- First Ad Container -->
-            <div class="ad-container">
-                <script async src="https://curoax.com/na/waWQiOjEyMTg3MjYsInNpZCI6MTYzNjg1Mywid2lkIjo3MzI4MDQsInNyYyI6Mn0=eyJ.js"></script>
+            <div class="ad-container" style="position: relative;">
+                <div id="ad-slot-1"></div>
+               <script>
+    atOptions = {
+        'key': '8cf86ce4b80eb9ca5441763a5c85b900',
+        'format': 'iframe',
+        'height': 90,
+        'width': 728,
+        'params': {}
+    };
+</script>
+<script src="https://processesshaken.com/8cf86ce4b80eb9ca5441763a5c85b900/invoke.js"></script>
             </div>
 
             <!-- NEWS TAB -->
@@ -1136,9 +1273,19 @@
             </div>
 
             <!-- Second Ad Container -->
-            <div class="ad-container">
-                <script async src="https://curoax.com/na/waWQiOjEyMTg3MjYsInNpZCI6MTYzNjg1Mywid2lkIjo3MzI4MDQsInNyYyI6Mn0=eyJ.js"></script>
-            </div>
+             <div class="ad-container" style="position: relative;">
+     <div id="ad-slot-1"></div>
+     <script>
+         atOptions = {
+             'key': '8cf86ce4b80eb9ca5441763a5c85b900',
+             'format': 'iframe',
+             'height': 90,
+             'width': 728,
+             'params': {}
+         };
+     </script>
+     <script src="https://processesshaken.com/8cf86ce4b80eb9ca5441763a5c85b900/invoke.js"></script>
+ </div>
 
             <!-- ABOUT SECTION -->
             <div class="about-section">
@@ -1311,7 +1458,43 @@
         // ==========================================
         // لإضافة خبر جديد، أضف كائن جديد إلى المصفوفة أدناه:
         const newsData = [
+            {
+    id: "45",
+    title: "# Haibara's Teenage New Game+ Unveils Trailer, Additional Cast",
+    img: "https://i.postimg.cc/brpNWqY7/1770286733-8f66aacfb583ad884edf65f223d7fe27-768x432.png",
+    desc: "تم عرض عرض تشويقي جديد لمسلسل Haibara’s Teenage New Game+ وكُشف عن ثلاثة أعضاء إضافيين في الطاقم يوم الخميس. الممثل الصوتي Yuto Uemura و Kanon Takao يقومان بدور Natsuki Haibara و Hikari Hoshimiya على التوالي."
+    ,
+    date: new Date().toISOString().split('T')[0],
+    server: 'saudi'
+},
 {
+    id: "46",
+    title: "# Haibara's Teenage New Game+ Unveils Trailer, Additional Cast",
+    img: "https://i.postimg.cc/brpNWqY7/1770286733-8f66aacfb583ad884edf65f223d7fe27-768x432.png",
+    desc: "El tráiler de Haibara’s Teenage New Game+ se presentó junto con tres miembros adicionales del reparto el jueves. Los actores de voz Yuto Uemura y Kanon Takao interpretan a Natsuki Haibara y Hikari Hoshimiya, respectivamente."
+    ,
+    date: new Date().toISOString().split('T')[0],
+    server: 'spain'
+},
+{
+    id: "47",
+    title: "# Haibara's Teenage New Game+ Unveils Trailer, Additional Cast",
+    img: "https://i.postimg.cc/brpNWqY7/1770286733-8f66aacfb583ad884edf65f223d7fe27-768x432.png",
+    desc: "Haibara’s Teenage New Game+ revealed a new trailer and three additional cast members on Thursday. Voice actors Yuto Uemura and Kanon Takao star as Natsuki Haibara and Hikari Hoshimiya, respectively."
+    ,
+    date: new Date().toISOString().split('T')[0],
+    server: 'usa'
+},
+{
+    id: "48",
+    title: "# Haibara's Teenage New Game+ Unveils Trailer, Additional Cast",
+    img: "https://i.postimg.cc/brpNWqY7/1770286733-8f66aacfb583ad884edf65f223d7fe27-768x432.png",
+    desc: "『Haibara’s Teenage New Game+』は新しい予告編と追加キャスト3名を木曜日に発表しました。声優の上村祐翔と高尾奏音が、それぞれ灰原夏樹と星宮ひかりの役を担当します。"
+    ,
+    date: new Date().toISOString().split('T')[0],
+    server: 'japan'
+},
+            {
     id: "41",
     title: "ONE PIECE FILM RED : Le thème d'Ado dépasse les 600 millions d'écoutes",
     img: "https://i.postimg.cc/5t7WmR4n/filters-quality(95)format(webp)-(3).jpg",
@@ -1407,6 +1590,7 @@
     img: "https://i.postimg.cc/L6pkbChV/1770128038-46315c9f369116cb6522156fdc772571-768x432.png",
     desc: "Greek mythology continues to influence the modern world through its lasting presence in literature, philosophy, astronomy, architecture, and other fields. One notable reimagining of these myths is Lore Olympus, a WEBTOON series created by Rachel Smythe. The series has gained widespread recognition for blending Greek mythology with modern technology and contemporary themes, including slow-burn romance, social dynamics, and gossip. Its distinctive artwork, featuring bold strokes and expressive color palettes reminiscent of a late-night jazz club, has earned multiple Eisner, Harvey, and Ringo Awards. The graphic novel adaptations have also consistently appeared on The New York Times bestseller list."
     ,
+    
     date: new Date().toISOString().split('T')[0],
     server: 'usa'
 },
@@ -1813,16 +1997,89 @@
         function openReviewDetail(id) {
             const item = reviewsData.find(r => r.id === id);
             if (item) {
-                // فتح الإعلان في نافذة جديدة
-                window.open('https://otieu.com/4/10553289', '_blank');
+                // إخفاء المحتوى الرئيسي
+                const mainWrapper = document.querySelector('.main-wrapper');
+                if (mainWrapper) mainWrapper.style.display = 'none';
                 
-                // الانتظار قليلاً ثم عرض المراجعة
+                // إنشاء صفحة الإعلان البيني
+                const adPage = document.createElement('div');
+                adPage.id = 'interstitial-ad-page';
+                adPage.className = 'interstitial-ad-page';
+                
+                adPage.innerHTML = `
+                    <div class="interstitial-content">
+                        <h2 class="interstitial-title">
+                            <i class="fas fa-hourglass-half" style="margin-right: 10px; color: var(--primary);"></i>
+                            جاري تحميل المراجعة...
+                        </h2>
+                        <div class="interstitial-ad-frame-wrapper">
+                            <iframe src="https://otieu.com/4/10553289" 
+                                    class="interstitial-ad-frame"
+                                    frameborder="0"
+                                    scrolling="auto">
+                            </iframe>
+                        </div>
+                        <p class="interstitial-countdown">
+                            سيتم التوجيه تلقائياً خلال <span id="countdown-timer">5</span> ثواني...
+                        </p>
+                        <button id="skip-btn" class="skip-ad-btn" disabled>
+                            <i class="fas fa-forward"></i> تخطي الإعلان
+                        </button>
+                    </div>
+                `;
+                
+                document.body.appendChild(adPage);
+                
+                // العد التنازلي
+                let countdown = 5;
+                const countdownEl = document.getElementById('countdown-timer');
+                const skipBtn = document.getElementById('skip-btn');
+                
+                const timer = setInterval(() => {
+                    countdown--;
+                    if (countdownEl) countdownEl.textContent = countdown;
+                    
+                    if (countdown <= 0) {
+                        clearInterval(timer);
+                        if (skipBtn) {
+                            skipBtn.disabled = false;
+                            skipBtn.textContent = '✓ تخطي الإعلان';
+                        }
+                        // التوجيه التلقائي بعد انتهاء العد
+                        skipInterstitialAd(id);
+                    }
+                }, 1000);
+                
+                // إضافة حدث الضغط على زر التخطي
+                if (skipBtn) {
+                    skipBtn.addEventListener('click', () => {
+                        if (!skipBtn.disabled) {
+                            clearInterval(timer);
+                            skipInterstitialAd(id);
+                        }
+                    });
+                }
+            }
+        }
+        
+        function skipInterstitialAd(id) {
+            const adPage = document.getElementById('interstitial-ad-page');
+            if (adPage) {
+                adPage.style.opacity = '0';
                 setTimeout(() => {
-                    const newUrl = `?type=review&id=${id}&title=${createSlug(item.title)}`;
-                    window.history.pushState({ path: newUrl }, '', newUrl);
-                    document.title = `${item.title} | Review`;
-                    renderReviewDetail(item);
-                }, 500);
+                    adPage.remove();
+                }, 300);
+            }
+            
+            const mainWrapper = document.querySelector('.main-wrapper');
+            if (mainWrapper) mainWrapper.style.display = 'grid';
+            
+            const item = reviewsData.find(r => r.id === id);
+            if (item) {
+                const newUrl = `?type=review&id=${id}&title=${createSlug(item.title)}`;
+                window.history.pushState({ path: newUrl }, '', newUrl);
+                document.title = `${item.title} | Review`;
+                renderReviewDetail(item);
             }
         }
 
@@ -1977,10 +2234,63 @@
             document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
         }
 
+        // تنظيف الإعلانات وإخفاء النصوص غير المرغوبة
+        function cleanAdContainers() {
+            const adContainers = document.querySelectorAll('.ad-container');
+            adContainers.forEach(container => {
+                // إخفاء جميع العناصر النصية المباشرة
+                Array.from(container.childNodes).forEach(node => {
+                    if (node.nodeType === Node.TEXT_NODE) {
+                        node.remove();
+                    }
+                });
+                
+                // إخفاء كل divs ما عدا الذي يحتوي على الإعلان الفعلي
+                const allDivs = container.querySelectorAll('div');
+                allDivs.forEach(div => {
+                    const text = div.textContent || '';
+                    // إذا كان div يحتوي على كود JavaScript أو نصوص إعدادات
+                    if (text.includes('atOptions') || 
+                        text.includes('key') || 
+                        text.includes('format') ||
+                        text.includes('iframe') ||
+                        text.includes('document.write') ||
+                        text.includes('script') ||
+                        text.includes('processesshaken')) {
+                        div.innerHTML = '';
+                        div.style.display = 'none';
+                        div.style.fontSize = '0';
+                        div.style.lineHeight = '0';
+                        div.style.height = '0';
+                        div.style.overflow = 'hidden';
+                    }
+                });
+                
+                // إخفاء script tags المرئية
+                const scripts = container.querySelectorAll('script');
+                scripts.forEach(script => {
+                    script.style.display = 'none';
+                });
+            });
+        }
+
         // Initialize
         renderServers();
         renderNews();
         renderReviews();
+        
+        // تنظيف الإعلانات بشكل متكرر
+        window.addEventListener('load', () => {
+            cleanAdContainers();
+            setTimeout(cleanAdContainers, 500);
+            setTimeout(cleanAdContainers, 1000);
+            setTimeout(cleanAdContainers, 2000);
+            setTimeout(cleanAdContainers, 3000);
+            setTimeout(cleanAdContainers, 5000);
+        });
+        
+        // تنظيف فوري
+        setTimeout(cleanAdContainers, 100);
     </script>
 </body>
 </html>
