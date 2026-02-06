@@ -894,6 +894,53 @@
             color: white; 
         }
 
+        /* --- Filter Buttons --- */
+        .filter-btn {
+            padding: 10px 20px;
+            background: var(--card-bg);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-dim);
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--text-main);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(142, 68, 173, 0.3);
+        }
+
+        .filter-btn.active {
+            background: var(--gradient);
+            border-color: var(--primary);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(142, 68, 173, 0.4);
+        }
+
+        .filter-btn i {
+            font-size: 16px;
+        }
+
+        /* Animation for filter menu */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* --- Bottom Navigation --- */
         .bottom-nav { 
             position: fixed; 
@@ -1201,7 +1248,10 @@
         </div>
         <div class="nav-links">
             <div class="nav-link active" data-tab="news">News</div>
-            <div class="nav-link" data-tab="reviews">Reviews</div>
+            <div class="nav-link" data-tab="reviews" id="top-reviews-tab">
+                <i class="fas fa-book" style="margin-right: 5px;"></i>
+                <span id="top-reviews-label">Reviews</span>
+            </div>
             <div class="nav-link" data-tab="forum">Community</div>
         </div>
         <div class="nav-actions">
@@ -1291,10 +1341,43 @@
 
                 <div id="review-grid">
                     <div class="section-wrapper">
-                        <div class="section-header">
-                            <i class="fas fa-star"></i>
-                            <h2>Latest Reviews</h2>
+                        <!-- شريط البحث مع أيقونة الفلترة -->
+                        <div style="position: relative; margin-bottom: 30px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="position: relative; flex: 1;">
+                                    <i class="fas fa-search" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 18px;"></i>
+                                    <input 
+                                        type="text" 
+                                        id="review-search" 
+                                        placeholder="ابحث عن اقتراح..." 
+                                        oninput="searchReviews()"
+                                        style="width: 100%; padding: 15px 60px 15px 55px; background: var(--card-bg); border: var(--border); border-radius: 50px; color: var(--text-main); font-size: 16px; transition: all 0.3s;"
+                                        onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 20px rgba(142, 68, 173, 0.3)'"
+                                        onblur="this.style.borderColor=''; this.style.boxShadow=''"
+                                    >
+                                    <button 
+                                        onclick="toggleFilterMenu()" 
+                                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 50%; cursor: pointer; transition: all 0.3s; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"
+                                        onmouseover="this.style.background='var(--primary-hover)'; this.style.transform='translateY(-50%) rotate(90deg)'"
+                                        onmouseout="this.style.background='var(--primary)'; this.style.transform='translateY(-50%) rotate(0deg)'"
+                                    >
+                                        <i class="fas fa-sliders-h" style="font-size: 18px;"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- قائمة الفلترة المنسدلة -->
+                            <div id="filter-menu" style="display: none; margin-top: 15px; background: var(--card-bg); border-radius: 20px; padding: 20px; border: var(--border); box-shadow: var(--shadow); animation: slideDown 0.3s ease;">
+                                <h3 id="filter-menu-title" style="margin-bottom: 15px; color: var(--text-main); font-size: 18px; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-filter" style="color: var(--primary);"></i>
+                                    تصفية حسب النوع
+                                </h3>
+                                <div id="filter-buttons-container" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                    <!-- Buttons will be inserted here dynamically -->
+                                </div>
+                            </div>
                         </div>
+                        
                         <div class="news-grid" id="reviews-render"></div>
                     </div>
                 </div>
@@ -1390,9 +1473,9 @@
             <i class="fas fa-newspaper"></i>
             <span>News</span>
         </div>
-        <div class="bottom-nav-item" data-tab="reviews">
-            <i class="fas fa-star"></i>
-            <span>Reviews</span>
+        <div class="bottom-nav-item" data-tab="reviews" id="bottom-reviews-tab">
+            <i class="fas fa-book"></i>
+            <span id="bottom-reviews-label">Reviews</span>
         </div>
         <div class="bottom-nav-item" data-tab="forum">
             <i class="fas fa-comments"></i>
@@ -1480,6 +1563,84 @@
             { id: 'japan', img: 'https://flagcdn.com/w320/jp.png', name: 'Japan' },
             { id: 'saudi', img: 'https://flagcdn.com/w320/sa.png', name: 'Saudi Arabia' }
         ];
+
+        // ==========================================
+        // 🌍 نظام الترجمات حسب السيرفر
+        // ==========================================
+        const translations = {
+            saudi: {
+                reviewsTab: "اقتراحات",
+                searchPlaceholder: "ابحث عن اقتراح...",
+                filterTitle: "تصفية حسب النوع",
+                allCategory: "الكل",
+                categories: {
+                    anime: "أنمي",
+                    manga: "مانجا",
+                    manhwa: "مانهوا",
+                    novel: "رواية",
+                    action: "أكشن",
+                    romance: "رومانسي",
+                    comedy: "كوميديا",
+                    drama: "دراما"
+                },
+                noResults: "لم يتم العثور على نتائج",
+                noResultsHint: "جرب البحث بكلمات مختلفة أو غيّر التصنيف"
+            },
+            usa: {
+                reviewsTab: "Suggestions",
+                searchPlaceholder: "Search for a suggestion...",
+                filterTitle: "Filter by Type",
+                allCategory: "All",
+                categories: {
+                    anime: "Anime",
+                    manga: "Manga",
+                    manhwa: "Manhwa",
+                    novel: "Novel",
+                    action: "Action",
+                    romance: "Romance",
+                    comedy: "Comedy",
+                    drama: "Drama"
+                },
+                noResults: "No results found",
+                noResultsHint: "Try different keywords or change the category"
+            },
+            spain: {
+                reviewsTab: "Sugerencias",
+                searchPlaceholder: "Buscar una sugerencia...",
+                filterTitle: "Filtrar por Tipo",
+                allCategory: "Todos",
+                categories: {
+                    anime: "Anime",
+                    manga: "Manga",
+                    manhwa: "Manhwa",
+                    novel: "Novela",
+                    action: "Acción",
+                    romance: "Romance",
+                    comedy: "Comedia",
+                    drama: "Drama"
+                },
+                noResults: "No se encontraron resultados",
+                noResultsHint: "Intenta con otras palabras o cambia la categoría"
+            },
+            japan: {
+                reviewsTab: "おすすめ",
+                searchPlaceholder: "おすすめを検索...",
+                filterTitle: "タイプで絞り込む",
+                allCategory: "すべて",
+                categories: {
+                    anime: "アニメ",
+                    manga: "マンガ",
+                    manhwa: "マンファ",
+                    novel: "小説",
+                    action: "アクション",
+                    romance: "ロマンス",
+                    comedy: "コメディ",
+                    drama: "ドラマ"
+                },
+                noResults: "結果が見つかりません",
+                noResultsHint: "別のキーワードで検索するか、カテゴリを変更してください"
+            }
+        };
 
         // ==========================================
         // 📰 بيانات الأخبار (NEWS DATA)
@@ -1817,17 +1978,71 @@
         // ⭐ بيانات المراجعات (REVIEWS DATA)
         // ==========================================
         // لإضافة مراجعة جديدة، أضف كائن جديد إلى المصفوفة أدناه:
+        // مثال على البيانات المطلوبة:
+        // {
+        //     id: "r1",
+        //     title: "عنوان المراجعة",
+        //     img: "رابط الصورة",
+        //     category: "anime", // يمكن: anime, manga, manhwa, novel, action, romance, comedy, drama
+        //     score: "9.5",
+        //     desc: "الوصف الكامل...",
+        //     server: 'saudi' // يمكن: saudi, usa, spain, japan
+        // }
         const reviewsData = [
+            {
+    id: "r5",
+    category: "manhwa",
+    score: "9.6",
+    title: "The Corrupt Magistrate Who Hid His Status Window",
+    img: "https://i.postimg.cc/X7y7JWnk/The-Corrupt-Magistrate-Who-Hid-His-Status-Window.jpg",
+    desc: "بطلٌ نذر حياته لمسارٍ واحد: امتحانات الخدمة المدنية. وبينما كان يجوب شوارع \"نوريانغجين\" كعادته، ودخل متجراً لتناول \"الأرز\" لسد جوعه، تغير مسار قدره إلى الأبد. \"إذا كانت غايتك هي الالتحاق بالوظيفة الحكومية، فسأحقق لك مرادك في التو واللحظة\". مدفوعاً بهذه العبارة الجريئة من صاحبة المتجر، يوافق البطل على الشروط، ليجد نفسه قد عاد بالزمن إلى عصر مملكة جوسون. ولكن، هناك شرطٌ جزائي مرعب: \"عليك الوصول إلى منصب 'رئيس مستشاري الدولة'. وفي حال الفشل، ستبدأ إجراءات التحصيل القسري لروحك\". بين الملك \"يونغجو\" (المرتبط بحكاية سرطان البحر)، وولي العهد \"سادو\" (حبيس صندوق الأرز)، يجد بطلنا \"كيم أون-هينغ\" نفسه مجبراً على خوض الصراع السياسي ليصبح رئيس مستشاري الدولة. هو لا يملك المعرفة لصنع الصابون، ولا البنادق، ولا المحركات البخارية... قصة كفاحه الشاقة، الخالية من اختراعات العصر الحديث، تبدأ الآن.",
+    date: new Date().toISOString().split('T')[0],
+    server: 'saudi'
+},
+{
+    id: "r6",
+    category: "manhwa",
+    score: "9.6",
+    title: "The Corrupt Magistrate Who Hid His Status Window",
+    img: "https://i.postimg.cc/X7y7JWnk/The-Corrupt-Magistrate-Who-Hid-His-Status-Window.jpg",
+    desc: "Un héroe dedicó toda su vida a un solo camino: los exámenes del servicio civil. Mientras caminaba por las calles de \"Noryangjin\" como de costumbre y entró a una tienda para comer \"arroz\" y calmar su hambre, su destino cambió para siempre. \"Si tu objetivo es conseguir un puesto gubernamental, haré que lo logres de inmediato\". Impulsado por estas palabras audaces de la dueña, acepta las condiciones y se encuentra viajando atrás en el tiempo a la era del Reino Joseon. Pero hay una condición aterradora: \"Debes alcanzar el cargo de 'Primer Consejero del Estado'. Si fracasas, comenzará la recolección forzada de tu alma\". Entre el rey \"Yeongjo\" (relacionado con la historia del cangrejo) y el príncipe heredero \"Sado\" (encerrado en una caja de arroz), nuestro protagonista \"Kim Eun-Heung\" se ve obligado a luchar en el conflicto político para convertirse en Primer Consejero. No tiene conocimientos para inventar jabón, armas o máquinas de vapor... Su dura lucha, sin inventos modernos, comienza ahora.",
+    date: new Date().toISOString().split('T')[0],
+    server: 'spain'
+},
+{
+    id: "r7",
+    category: "manhwa",
+    score: "9.6",
+    title: "The Corrupt Magistrate Who Hid His Status Window",
+    img: "https://i.postimg.cc/X7y7JWnk/The-Corrupt-Magistrate-Who-Hid-His-Status-Window.jpg",
+    desc: "A hero devoted his entire life to one path: the civil service exams. While walking through the streets of \"Noryangjin\" as usual, he entered a small shop to eat some \"rice\" and ease his hunger—only for his fate to change forever. \"If your goal is to obtain a government position, I will grant it to you instantly.\" Driven by the shop owner’s bold words, he agrees to the conditions, only to find himself sent back in time to the era of the Joseon Kingdom. However, there is a terrifying penalty: \"You must reach the position of 'Chief State Councillor'. If you fail, the forced collection of your soul will begin.\" Caught between King \"Yeongjo\" (linked to the crab legend) and Crown Prince \"Sado\" (trapped in a rice chest), our protagonist \"Kim Eun-Heung\" is forced into political struggle to become the Chief State Councillor. He has no knowledge to create soap, guns, or steam engines... His harsh journey, free of modern inventions, begins now.",
+    date: new Date().toISOString().split('T')[0],
+    server: 'usa'
+},
+{
+    id: "r8",
+    category: "manhwa",
+    score: "9.6",
+    title: "The Corrupt Magistrate Who Hid His Status Window",
+    img: "https://i.postimg.cc/X7y7JWnk/The-Corrupt-Magistrate-Who-Hid-His-Status-Window.jpg",
+    desc: "主人公は人生のすべてを一つの道に捧げていた――科挙試験（官僚登用試験）である。いつものように「ノリャンジン」の街を歩き、空腹を満たすために米を食べようと店に入った瞬間、運命は永遠に変わってしまう。『もしお前の目的が官職に就くことなら、今この瞬間に叶えてやろう』。店主の大胆な言葉に突き動かされ、条件を受け入れた主人公は、朝鮮王国の時代へと時間逆行してしまう。しかし恐ろしい条件があった――『国家最高顧問である「領議政」に到達せよ。失敗すれば魂の強制回収が始まる』。カニの逸話に結びつく王「英祖」、米櫃に閉じ込められた世子「思悼」の間で、主人公「キム・ウンヒョン」は政治闘争へと巻き込まれ、領議政を目指すことになる。石鹸も銃も蒸気機関も作れない…現代知識に頼らない過酷な奮闘が、今始まる。",
+    date: new Date().toISOString().split('T')[0],
+    server: 'japan'
+},
             {
     id: "r1",
     title: "JUJUTSU",
     img: "https://i.postimg.cc/d1jmrMjN/1770129257035.jpg",
+    category: "anime",
+    score: "9.5",
     desc: "تعتبر لحظة إطلاق \"القطع العالمي\" (World Cutting Slash) هي اللحظة الأكثر جدلاً وعبقرية في القتال، لأن سوكونا لم يستطع تنفيذها بقوته المجردة في تلك الحالة المزرية، بل اضطر لاستخدام أداة قانونية في عالم الجوجيتسو تُعرف بـ \"العهد المبرم\" (Binding Vow). إليك التحليل الدقيق لهذا العهد وكيف كان \"المقامرة الكبرى\" التي قتلت غوجو ساتورو: 1. المشكلة: لماذا احتاج سوكونا لعهد مبرم؟ بعد أن فجر غوجو تقنية \"الأرجواني المطلق\"، كان سوكونا في حالة يرثى لها: فقد ذراعه اليسرى (التي يحتاجها لتشكيل الأختام). تضرر جسده بشدة وانخفضت كفاءة \"تقنية اللعنة العكسية\" لديه. تقنية \"القطع العالمي\" تتطلب عادةً (شروط التفعيل): ختم يدوي (Enma-ten)، توجيه باليد، وترتيل الكلمات لتعزيز القوة. بما أن سوكونا كان يملك ذراعاً واحدة فقط، كان من المستحيل تقنياً إطلاق الضربة قبل أن ينهي غوجو أمره. 2. العهد المبرم: \"مقايضة الحاضر بالمستقبل\" لإطلاق الضربة القاضية فوراً وبدون أختام، عقد سوكونا عهداً مع \"النظام والقواعد\" الخاصة بالطاقة الملعونة: المقايضة: \"سأطلق هذه الضربة الآن (بدون أختام، بدون ترتيل، وبدون توجيه يدوي) لمرة واحدة فقط كاستثناء.\" الثمن (العقوبة الدائمة): \"في المقابل، طوال بقية حياتي، لن أستطيع إطلاق هذه الضربة (القطع العالمي) إلا بـ ثلاثة شروط مجتمعة: (الختم اليدوي + الترتيل المستمر + توجيه المسار باليد).\" ببساطة: سوكونا \"اشترى\" الفوز في اللحظة الراهنة مقابل جعل التقنية أصعب وأعقد في المستقبل. 3. لماذا لم يتفادَ غوجو الضربة؟ هنا تكمن عبقرية العهد المبرم. غوجو، بفضل \"العيون الست\"، يمكنه رؤية تدفق الطاقة وبناء التقنية. لكن لأن سوكونا استخدم عهداً مبرماً لإلغاء \"مقدمات التقنية\": الضربة انطلقت بدون تحذير (بدون شحن للطاقة أو حركة يد). غوجو كان يظن أن سوكونا في حالة لا تسمح له بالهجوم، وكان يظن أن \"اللانهاية\" ستحميه من أي قطع عادي. بسبب إلغاء \"الترتيل والأختام\"، لم يدرك غوجو أن ماهية التقنية قد تغيرت من \"قطع جسدي\" إلى \"قطع للواقع\" إلا بعد أن شُق جسده بالفعل.",
     date: new Date().toISOString().split('T')[0],
     server: 'saudi'
 },
 {
     id: "r2",
+    category: "anime",
+    score: "9.5",
     title: "JUJUTSU",
     img: "https://i.postimg.cc/d1jmrMjN/1770129257035.jpg",
     desc: "El momento de activar el \"World Cutting Slash\" es el más polémico y brillante de la pelea, ya que Sukuna no pudo usar su fuerza pura en ese estado miserable y tuvo que recurrir a una herramienta legal en el mundo de Jujutsu llamada \"Voto Vinculante\" (Binding Vow). Aquí está el análisis detallado de este voto y cómo fue la 'gran apuesta' que mató a Gojo Satoru: 1. Problema: ¿Por qué necesitaba Sukuna un voto vinculante? Después de que Gojo liberara la técnica 'Absolute Purple', Sukuna estaba en un estado lamentable: perdió su brazo izquierdo (necesario para sellos), su cuerpo sufrió daños graves y la eficiencia de su 'Técnica de Maldición Inversa' disminuyó. El \"World Cutting Slash\" normalmente requiere: sello manual (Enma-ten), apuntar con la mano y recitar palabras para potenciar la fuerza. Con un solo brazo, era imposible técnicamente lanzar el ataque antes de que Gojo lo interfiriera. 2. Voto Vinculante: 'intercambio presente-futuro' Para ejecutar el golpe decisivo de inmediato sin sellos, Sukuna hizo un pacto con las 'reglas del flujo de energía maldita': intercambio: \"Lanzaré este ataque ahora (sin sellos, sin recitación, sin dirección manual) una sola vez como excepción.\" Precio (penalización permanente): \"Después, solo podré usar esta técnica con las tres condiciones combinadas: sello manual + recitación continua + dirección manual.\" En otras palabras, Sukuna 'compró' la victoria del momento a cambio de hacer la técnica más difícil en el futuro. 3. ¿Por qué Gojo no evitó el ataque? Aquí está la genialidad del voto vinculante. Gojo, gracias a sus 'Seis Ojos', puede ver el flujo de energía y construir técnicas. Pero al usar Sukuna el voto vinculante para cancelar las preparaciones, el ataque se lanzó sin advertencia (sin carga de energía ni movimiento de la mano). Gojo asumió que Sukuna no podía atacar y que la 'Infinidad' lo protegería de cualquier corte normal. Debido a la omisión de los sellos y recitación, Gojo no se dio cuenta de que la técnica había cambiado de 'corte físico' a 'corte de la realidad' hasta que su cuerpo ya estaba partido.",
@@ -1836,6 +2051,8 @@
 },
 {
     id: "r3",
+    category: "anime",
+    score: "9.5",
     title: "JUJUTSU",
     img: "https://i.postimg.cc/d1jmrMjN/1770129257035.jpg",
     desc: "The moment Sukuna unleashed the 'World Cutting Slash' is the most controversial and brilliant in the battle, as he couldn’t execute it with raw power in his miserable state, and had to use a legal tool in the Jujutsu world called the 'Binding Vow'. Here’s the detailed analysis of this vow and how it was the 'big gamble' that killed Gojo Satoru: 1. Problem: Why did Sukuna need a binding vow? After Gojo triggered 'Absolute Purple', Sukuna was in a pitiable state: lost his left arm (needed for forming seals), his body was severely damaged, and his 'Reverse Cursed Technique' efficiency decreased. Normally, 'World Cutting Slash' requires: manual seal (Enma-ten), hand direction, and chanting words to enhance power. With only one arm, launching the strike before Gojo finished was technically impossible. 2. Binding Vow: 'Trading present for future' To immediately strike without seals, Sukuna made a vow with the 'rules of cursed energy flow': The deal: 'I will strike now (without seals, chanting, or hand guidance) once as an exception.' The price (permanent penalty): 'Afterward, I can only use this strike with all three conditions together: manual seal + continuous chanting + hand guidance.' Simply put, Sukuna 'bought' victory in the moment at the cost of making the technique harder in the future. 3. Why didn’t Gojo avoid the strike? This is the brilliance of the binding vow. Thanks to the 'Six Eyes', Gojo can see energy flow and build techniques. But since Sukuna used the binding vow to cancel the preparation: the strike came without warning (no energy charge or hand movement). Gojo assumed Sukuna couldn’t attack and that 'Infinity' would protect him. Because the chanting and seals were omitted, Gojo only realized the nature of the technique changed from 'physical cut' to 'reality cut' after his body was already sliced.",
@@ -1844,6 +2061,8 @@
 },
 {
     id: "r4",
+    category: "anime",
+    score: "9.5",
     title: "JUJUTSU",
     img: "https://i.postimg.cc/d1jmrMjN/1770129257035.jpg",
     desc: "「ワールドカッティングスラッシュ」（World Cutting Slash）が発動された瞬間は、戦いの中で最も議論を呼び、かつ天才的な瞬間です。なぜなら、スケジュナはその惨めな状態で純粋な力だけでは技を発動できず、呪術世界の合法的手段である「バインディングボウ」（Binding Vow）を使う必要があったからです。以下はこの誓約の詳細な分析と、五条悟を殺した「大博打」の内容です。1. 問題：なぜスケジュナはバインディングボウを必要としたのか？ 五条が「絶対紫」を発動した後、スケジュナは悲惨な状態に陥りました：左腕を失い（印を結ぶために必要）、体に大きな損傷を受け、「反呪術」の効率も低下しました。「ワールドカッティングスラッシュ」は通常、以下を必要とします：手印（Enma-ten）、手での狙い、力を高めるための詠唱。片腕しかないスケジュナにとって、五条が行動を終える前に技を出すことは技術的に不可能でした。2. バインディングボウ：「現在と未来の交換」 印なしで即座に決定打を放つため、スケジュナは呪力の流れのルールと誓約を交わしました。取り引き：「今この一撃を放つ（印なし、詠唱なし、手の誘導なし）例外として一度だけ。」代償（永久的ペナルティ）：「その後、この技は3つの条件（手印 + 継続詠唱 + 手の誘導）を全て満たさないと発動できない。」つまり、スケジュナは瞬間の勝利を得る代わりに、技を将来より難しくしたのです。3. なぜ五条は避けられなかったのか？ ここにバインディングボウの天才性があります。「六眼」のおかげで五条はエネルギーの流れを見て技を構築できます。しかしスケジュナが誓約を使って準備をキャンセルしたため、攻撃は警告なしに放たれました（チャージや手の動きなし）。五条はスケジュナが攻撃できないと考え、「無限」が通常の斬撃から守ると思っていました。詠唱と印が省略されたため、技の性質が「物理的斬撃」から「現実斬撃」に変わったことに、体が切断された後でしか気づかなかったのです。",
@@ -2038,20 +2257,151 @@
         }
 
         /* --- Reviews Logic --- */
+        let currentCategoryFilter = 'all';
+        
+        // دالة تحديث واجهة Reviews حسب اللغة
+        function updateReviewsUI() {
+            const lang = translations[currentServer];
+            
+            // تحديث عنوان التاب
+            const topLabel = document.getElementById('top-reviews-label');
+            const bottomLabel = document.getElementById('bottom-reviews-label');
+            if (topLabel) topLabel.textContent = lang.reviewsTab;
+            if (bottomLabel) bottomLabel.textContent = lang.reviewsTab;
+            
+            // تحديث placeholder البحث
+            const searchInput = document.getElementById('review-search');
+            if (searchInput) searchInput.placeholder = lang.searchPlaceholder;
+            
+            // تحديث عنوان الفلترة
+            const filterTitle = document.getElementById('filter-menu-title');
+            if (filterTitle) {
+                filterTitle.innerHTML = `<i class="fas fa-filter" style="color: var(--primary);"></i> ${lang.filterTitle}`;
+            }
+            
+            // تحديث أزرار الفلترة
+            updateFilterButtons();
+        }
+        
+        // دالة إنشاء أزرار الفلترة
+        function updateFilterButtons() {
+            const lang = translations[currentServer];
+            const container = document.getElementById('filter-buttons-container');
+            if (!container) return;
+            
+            const categoryIcons = {
+                all: 'fa-th',
+                anime: 'fa-tv',
+                manga: 'fa-book',
+                manhwa: 'fa-book-open',
+                novel: 'fa-feather',
+                action: 'fa-fist-raised',
+                romance: 'fa-heart',
+                comedy: 'fa-laugh',
+                drama: 'fa-theater-masks'
+            };
+            
+            container.innerHTML = `
+                <button class="filter-btn active" onclick="filterByCategory('all')" data-category="all">
+                    <i class="fas ${categoryIcons.all}"></i> ${lang.allCategory}
+                </button>
+                ${Object.keys(lang.categories).map(cat => `
+                    <button class="filter-btn" onclick="filterByCategory('${cat}')" data-category="${cat}">
+                        <i class="fas ${categoryIcons[cat]}"></i> ${lang.categories[cat]}
+                    </button>
+                `).join('')}
+            `;
+        }
+        
         function renderReviews() {
+            const lang = translations[currentServer];
+            updateReviewsUI();
+            
             // تصفية المراجعات حسب السيرفر الحالي
             const filtered = reviewsData.filter(r => r.server === currentServer);
             
             if (filtered.length === 0) {
-                document.getElementById('reviews-render').innerHTML = `<p style="text-align:center; padding:40px; color:var(--text-dim)">No reviews available for ${currentServer.toUpperCase()}.</p>`;
+                document.getElementById('reviews-render').innerHTML = `<p style="text-align:center; padding:40px; color:var(--text-dim)">No suggestions available for ${currentServer.toUpperCase()}.</p>`;
             } else {
                 document.getElementById('reviews-render').innerHTML = filtered.map(r => `
                     <div class="news-card" onclick="openReviewDetail('${r.id}')">
-                         <div class="review-score-badge"><i class="fas fa-star"></i> ${r.score}</div>
                         <img src="${r.img}" class="news-img">
                         <div class="news-info">
                             <h3>${r.title}</h3>
-                            <p>${r.desc}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // إعادة تعيين الفلترة والبحث
+            currentCategoryFilter = 'all';
+            const searchInput = document.getElementById('review-search');
+            if (searchInput) searchInput.value = '';
+        }
+
+        // دالة لفتح/إغلاق قائمة الفلترة
+        function toggleFilterMenu() {
+            const menu = document.getElementById('filter-menu');
+            if (menu.style.display === 'none' || menu.style.display === '') {
+                menu.style.display = 'block';
+            } else {
+                menu.style.display = 'none';
+            }
+        }
+
+        // دالة الفلترة حسب التصنيف
+        function filterByCategory(category) {
+            currentCategoryFilter = category;
+            
+            // تحديث الأزرار
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-category="${category}"]`)?.classList.add('active');
+            
+            // تطبيق الفلترة مع البحث
+            applyFilters();
+        }
+
+        // دالة البحث
+        function searchReviews() {
+            applyFilters();
+        }
+
+        // دالة تطبيق الفلترة والبحث معاً
+        function applyFilters() {
+            const lang = translations[currentServer];
+            const searchTerm = document.getElementById('review-search').value.toLowerCase();
+            
+            // تصفية حسب السيرفر أولاً
+            let filtered = reviewsData.filter(r => r.server === currentServer);
+            
+            // تصفية حسب التصنيف
+            if (currentCategoryFilter !== 'all') {
+                filtered = filtered.filter(r => r.category === currentCategoryFilter);
+            }
+            
+            // تصفية حسب البحث
+            if (searchTerm) {
+                filtered = filtered.filter(r => 
+                    r.title.toLowerCase().includes(searchTerm) || 
+                    (r.desc && r.desc.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            // عرض النتائج
+            if (filtered.length === 0) {
+                document.getElementById('reviews-render').innerHTML = `
+                    <p style="text-align:center; padding:60px; color:var(--text-dim); grid-column: 1/-1;">
+                        <i class="fas fa-search" style="font-size:60px; margin-bottom:20px; display:block; opacity:0.3;"></i>
+                        <span style="font-size:18px; font-weight:600;">${lang.noResults}</span><br>
+                        <span style="font-size:14px; margin-top:10px; display:block;">${lang.noResultsHint}</span>
+                    </p>
+                `;
+            } else {
+                document.getElementById('reviews-render').innerHTML = filtered.map(r => `
+                    <div class="news-card" onclick="openReviewDetail('${r.id}')">
+                        <img src="${r.img}" class="news-img">
+                        <div class="news-info">
+                            <h3>${r.title}</h3>
                         </div>
                     </div>
                 `).join('');
